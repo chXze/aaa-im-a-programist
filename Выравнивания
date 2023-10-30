@@ -1,0 +1,12 @@
+//Выравнивания//
+#include <iostream>
+#include <iomanip>
+using namespace std;
+int main()
+
+{
+    cout << "1." << setw(10) << "Gleb" << endl;
+    cout << "2." << setw(10) << left << "Gleb" << endl;
+    cout << "3." << setw(10) << right << "Gleb" << endl;
+    return 0;
+}
