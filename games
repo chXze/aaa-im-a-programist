@@ -1,0 +1,65 @@
+using System;
+using System.IO;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Гамесы
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            reading r = new reading("map.txt");
+
+            r.DrowMap();
+        }
+
+    }
+
+    class reading 
+    {
+        private char[,] _map;
+
+        public reading(string file)
+        {
+            _map = RideMap(file);
+        }
+
+        public void DrowMap()
+        {
+            for (int y = 0; y < _map.GetLength(1); y++)
+            {
+                for (int x = 0; x < _map.GetLength(0); x++)
+                    Console.Write(_map[x, y]);
+
+                Console.WriteLine();
+            }
+        }
+        private char[,] RideMap(string path)
+        {
+            string[] file = File.ReadAllLines(path); 
+
+            char[,] map = new char[GetMaxLenghtheOfline(file), file.Length];
+
+            for (int x = 0; x < map.GetLength(0); x++)
+                for (int y = 0; y < map.GetLength(1); y++)
+                    map[x, y] = file[y][x];
+
+            return map;
+
+        }
+
+        private int GetMaxLenghtheOfline(string[] lines)
+        {
+            int maxLengt = lines[0].Length;
+            foreach (var line in lines)
+                if (line.Length > maxLengt)
+                    maxLengt = line.Length;
+
+            return maxLengt;
+        }
+
+    }
+}
