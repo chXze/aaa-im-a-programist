@@ -1,0 +1,84 @@
+using System;
+using System.Collections.Generic;
+
+namespace ShopQueueSimulator
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Queue<Customer> queue = new Queue<Customer>();
+            List<Product> products = new List<Product>()
+            {
+                new Product("Milk", 2.50),
+                new Product("Bread", 1.20),
+                new Product("Eggs", 3.00),
+                new Product("Cheese", 5.50)
+            };
+
+            double totalEarnings = 0;
+
+            Console.WriteLine("Welcome to the shop!");
+            Console.WriteLine("Available products:");
+            foreach (var product in products)
+            {
+                Console.WriteLine($"{product.Name} - ${product.Price}");
+            }
+
+            while (true)
+            {
+                Console.WriteLine("\nEnter customer name (or type 'done' to exit): ");
+                string name = Console.ReadLine();
+
+                if (name.ToLower() == "done")
+                    break;
+
+                Console.WriteLine("Enter product name: ");
+                string productName = Console.ReadLine();
+
+                Product productToBuy = products.Find(p => p.Name.ToLower() == productName.ToLower());
+                if (productToBuy != null)
+                {
+                    queue.Enqueue(new Customer(name, productToBuy));
+                    Console.WriteLine($"{name} has joined the queue.");
+                }
+                else
+                {
+                    Console.WriteLine("Product not found.");
+                }
+            }
+
+            Console.WriteLine("\nProcessing customers:");
+            while (queue.Count > 0)
+            {
+                Customer currentCustomer = queue.Dequeue();
+                totalEarnings += currentCustomer.Product.Price;
+                Console.WriteLine($"Serving {currentCustomer.Name}. Purchased: {currentCustomer.Product.Name}. Paid ${currentCustomer.Product.Price}. Total earnings: ${totalEarnings}");
+            }
+        }
+    }
+
+    class Product
+    {
+        public string Name { get; }
+        public double Price { get; }
+
+        public Product(string name, double price)
+        {
+            Name = name;
+            Price = price;
+        }
+    }
+
+    class Customer
+    {
+        public string Name { get; }
+        public Product Product { get; }
+
+        public Customer(string name, Product product)
+        {
+            Name = name;
+            Product = product;
+        }
+    }
+}
