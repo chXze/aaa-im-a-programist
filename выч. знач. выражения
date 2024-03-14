@@ -1,0 +1,13 @@
+#include <iostream>
+#include <math.h>
+using namespace sld;
+    int main ()
+    {
+        int x; int y; float z;
+        cout << "Ведите целое значение x";
+        cout << "Введите целое значение y";
+        z=((cos x)/(M_PI - 2x)+16)*cos x y;
+        cin >> x;
+        cin >> y:
+        return 0;
+    }
