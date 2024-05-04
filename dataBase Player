@@ -1,0 +1,137 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace DataBase_User
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            const int CommandExit = 1;
+            const int CommandLIst = 2;
+            const int CommandAdd = 3;
+            const int CommandStatus = 4;
+            const int CommandUpdate = 5;
+            string comand;
+            bool isOpen = true;
+
+            while (isOpen)
+            {
+                Console.WriteLine("Добро пожаловать в базу");
+                Console.WriteLine($"для выхода из базы нажмите {CommandExit}");
+                Console.WriteLine($"для вывода из всепх данных нажмите {CommandLIst}"); \\ с этого момента надоело на русский периключатся пользователь сори пж, учи инглишь емае
+                Console.WriteLine($"For add to DataBAse tap {CommandAdd}");
+                Console.WriteLine($"For redaction status enter a {CommandStatus}");
+                Console.WriteLine($"For levelUp tap {CommandUpdate}");
+                comand = Console.ReadLine();
+            }
+            PlayerDatabase playerDatabase = new PlayerDatabase();
+        }
+    }
+    class PlayerDatabase
+    {
+        private PlayerDatabase[]_database = new Player[0];
+
+        public void ShowInfo()
+        {
+            for (int i = 0; i < _database.Length; i++)
+            {
+                Console.WriteLine(_database[i].Info());
+            }
+        }
+
+        public void AddPlayer()
+        {
+            Console.WriteLine($"Add nickName: ");
+            string nickName = Console.ReadLine();
+
+            Console.WriteLine("Add levelXP: ");
+            int level = Convert.ToInt32( Console.ReadLine() );
+
+            Changedatabase(_database.Length + 1);
+            _database[_database.Length - 1] = new Player(_database.Length, nickName, level);
+        }
+
+        public void DeletePlayer()
+        {
+            Console.WriteLine("Enter number of deleted player: ");
+            int number = Convert.ToInt32( Console.ReadLine() );
+
+            Changedatabase(_database.Length - 1, number);
+            for (int i = 0; i < _database.Length; i++)
+            {
+                _database[i].ChangeNumbers(i + 1);
+            }
+        }
+        public void Changedatabase(int newSize, int deleteNumbers = 0)
+        {
+            int j = 0;
+            Player[] tempArr = new Player[newSize];
+            for (int i = 0; i < _database.Length; i++) 
+            {
+                if (i != deleteNumbers -1)
+                {
+                    tempArr[j] = _database[i];
+                    j++;
+                }
+            }
+            _database = tempArr;
+        }
+
+        public void status(string actionstatus)
+        {
+            Console.WriteLine($"Enter number Player, how need{actionstatus}change status: ");
+            int numberstatus = Convert.ToInt32( Console.ReadLine() );
+
+            if (actionstatus == "active") _database[numberstatus - 1].Status();
+            else if (actionstatus == "Inactive") _database[numberstatus - 1].UnStatus();
+
+            Console.WriteLine($" Player changed {numberstatus}status");
+        }
+    }
+    class Player
+    {
+        private int _number;
+        private string _nickName;
+        private int _level;
+        private bool _status = false;
+        private string _statusInfo = "Inactive";
+
+        public Player (int number, string nickName, int id, string name)
+        {
+            _number = number;
+            _nickName = nickName;   
+            _level = id;
+            _status = false;
+
+            if (_status) _statusInfo = "NO";
+            else _statusInfo = "YES";
+        }
+
+        public void Status()
+        {
+            _status = true;
+            _statusInfo = "NO";
+        }
+
+        public string UnStatus() 
+        {
+            _status = false ;
+            _statusInfo = "YES";
+        }
+
+        public void ChangeNumber(int newNumber)
+        {
+            _number = newNumber;
+        }
+
+        public string Info()
+        {
+            string info = $"Player {_number} -Nick: {_nickName}, Level: {_level}, Status: {_statusInfo}";
+            return info ;
+        }
+    }
+}
