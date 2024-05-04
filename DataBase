@@ -1,0 +1,138 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+namespace RoboPuff
+{
+        public class User
+        {
+            public string Name { get; set; }
+            public int Id { get; set; }
+            public bool IsActived { get; set; }
+
+            public User(string name, int id, bool isActived)
+            {
+                Name = name;
+                Id = id;
+                IsActived = isActived;
+            }
+
+            public void Activate()
+            {
+                IsActived = true;
+            }
+
+            public void Deactivate()
+            {
+                IsActived = false;
+            }
+        }
+
+        public class UserDataBase
+        {
+            private List<User> users = new List<User>();
+
+            public void AddUser(User user)
+            {
+                users.Add(user);
+            }
+
+            public void ActivateUser(int userId)
+            {
+                User user = users.Find(u => u.Id == userId);
+                if (user != null)
+                {
+                    user.Activate();
+                    Console.WriteLine("Пользователь активированн.");
+                }
+                else
+                {
+                    Console.WriteLine("Пользователь с таким ID не найден.");
+                }
+            }
+
+            public void DeactivateUser(int userId)
+            {
+                User user = users.Find(u => u.Id == userId);
+                if (user != null)
+                {
+                    user.Deactivate();
+                    Console.WriteLine("Пользователь деактивированн");
+                }
+                else
+                {
+                    Console.WriteLine("Пользователь с таким ID не найден.");
+                }
+            }
+            public void DisplayUsers()
+            {
+                foreach (User user in users)
+                {
+                    Console.WriteLine($"Имя: {user.Name}, Id: {user.Id}, Статус активности: {user.IsActived}");
+                }
+            }
+
+        }
+
+        class Program
+        {
+            static void Main()
+            {
+                UserDataBase userDb = new UserDataBase();
+
+                while (true)
+                {
+                    Console.WriteLine("Выберите задачу:\n1. Добавить нового пользователя\n2. Активировать пользователя\n3. Деактивировать пользователя\n4. Показать список пользователей\n5. Выход");
+                    string chose = Console.ReadLine();
+
+                    switch (chose)
+                    {
+                        case "1":
+                            Console.WriteLine("Введите имя пользователя:");
+                            string name = Console.ReadLine();
+
+                            Console.WriteLine("Введите ID пользователя:");
+                            int id = Int32.Parse(Console.ReadLine());
+
+                            Console.WriteLine("Введите логический статус пользователя(true/False):");
+                            bool isActive = Boolean.Parse(Console.ReadLine());
+
+                            User newUser = new User(name, id, isActive);
+                            userDb.AddUser(newUser);
+
+                            Console.WriteLine("Пользователь добавлен!");
+                            break;
+
+                        case "2":
+                            Console.WriteLine("Введите id пользователя для активации:");
+                            int activateId = Int32.Parse(Console.ReadLine());
+                            userDb.ActivateUser(activateId);
+                            break;
+
+                        case "3":
+                            Console.WriteLine("Введите ID пользователя для деактиивации:");
+                            int deactivateId = Int32.Parse(Console.ReadLine());
+                            userDb.DeactivateUser(deactivateId);
+                            break;
+
+                        case "4":
+                            userDb.DisplayUsers();
+                            break;
+
+                        case "5":
+                            Environment.Exit(0);
+                            break;
+
+                        default:
+                            Console.WriteLine("НЕверный выбор тыкни другую кнопку.");
+                            break;
+
+
+                    }
+                }
+            }
+        }
+
+  
+}
