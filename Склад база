@@ -100,7 +100,7 @@ class Program
     {
         foreach (var cargo in cargos)
         {
-            Console.WriteLine($"Вес: {cargo.Weight}, Тип: {cargo.Type}, Дата поставки: {cargo.DeliveryDate.ToShortDateString()}, Время поставки: {cargo.DeliveryTime}");
+            Console.WriteLine($"Вес: {cargo.Weight}кг, Тип: {cargo.Type}, Дата поставки: {cargo.DeliveryDate.ToShortDateString()}, Время поставки: {cargo.DeliveryTime}");
         }
     }
 
