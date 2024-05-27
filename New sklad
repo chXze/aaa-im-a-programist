@@ -1,0 +1,121 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+
+public class Cargo
+{
+    public double Weight { get; set; }
+    public string Type { get; set; }
+    public DateTime DeliveryDate { get; set; }
+    public TimeSpan DeliveryTime { get; set; }
+
+    public override string ToString()
+    {
+        return $"{Weight},{Type},{DeliveryDate.ToShortDateString()},{DeliveryTime}";
+    }
+
+    public static Cargo FromString(string line)
+    {
+        var parts = line.Split(',');
+        return new Cargo
+        {
+            Weight = double.Parse(parts[0]),
+            Type = parts[1],
+            DeliveryDate = DateTime.Parse(parts[2]),
+            DeliveryTime = TimeSpan.Parse(parts[3])
+        };
+    }
+}
+
+class Program
+{
+    static string filePath = "warehouse.txt";
+    static List<Cargo> cargos = new List<Cargo>();
+
+    static void Main()
+    {
+        LoadData();
+        while (true)
+        {
+            Console.WriteLine("1. Добавить новый груз");
+            Console.WriteLine("2. Показать все грузы");
+            Console.WriteLine("3. Выйти");
+            var choice = Console.ReadLine();
+
+            if (choice == "1")
+            {
+                AddNewCargo();
+            }
+            else if (choice == "2")
+            {
+                DisplayAllCargos();
+            }
+            else if (choice == "3")
+            {
+                SaveData();
+                break;
+            }
+        }
+    }
+
+    static void AddNewCargo()
+    {
+        Console.Write("Введите вес груза: ");
+        double weight = double.Parse(Console.ReadLine());
+
+        Console.Write("Введите тип груза: ");
+        string type = Console.ReadLine();
+
+        Console.Write("Введите дату поставки (например, 2024-05-27): ");
+        DateTime deliveryDate = DateTime.Parse(Console.ReadLine());
+
+        Console.Write("Введите время поставки (например, 14:30): ");
+        TimeSpan deliveryTime = TimeSpan.Parse(Console.ReadLine());
+
+        var cargo = new Cargo
+        {
+            Weight = weight,
+            Type = type,
+            DeliveryDate = deliveryDate,
+            DeliveryTime = deliveryTime
+        };
+
+        cargos.Add(cargo);
+    }
+
+    static void DisplayAllCargos()
+    {
+        foreach (var cargo in cargos)
+        {
+            Console.WriteLine($"Вес: {cargo.Weight}, Тип: {cargo.Type}, Дата поставки: {cargo.DeliveryDate.ToShortDateString()}, Время поставки: {cargo.DeliveryTime}");
+        }
+    }
+
+    static void SaveData()
+    {
+        using (var writer = new StreamWriter(filePath))
+        {
+            foreach (var cargo in cargos)
+            {
+                writer.WriteLine(cargo.ToString());
+            }
+        }
+    }
+
+    static void LoadData()
+    {
+        if (!File.Exists(filePath))
+        {
+            return;
+        }
+
+        using (var reader = new StreamReader(filePath))
+        {
+            string line;
+            while ((line = reader.ReadLine()) != null)
+            {
+                cargos.Add(Cargo.FromString(line));
+            }
+        }
+    }
+}
