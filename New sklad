@@ -17,6 +17,12 @@ public class Cargo
     public static Cargo FromString(string line)
     {
         var parts = line.Split(',');
+
+        if (parts.Length != 4)
+        {
+            throw new FormatException("Неправильный формат строки.");
+        }
+
         return new Cargo
         {
             Weight = double.Parse(parts[0]),
@@ -60,27 +66,34 @@ class Program
 
     static void AddNewCargo()
     {
-        Console.Write("Введите вес груза: ");
-        double weight = double.Parse(Console.ReadLine());
-
-        Console.Write("Введите тип груза: ");
-        string type = Console.ReadLine();
-
-        Console.Write("Введите дату поставки (например, 2024-05-27): ");
-        DateTime deliveryDate = DateTime.Parse(Console.ReadLine());
-
-        Console.Write("Введите время поставки (например, 14:30): ");
-        TimeSpan deliveryTime = TimeSpan.Parse(Console.ReadLine());
-
-        var cargo = new Cargo
+        try
         {
-            Weight = weight,
-            Type = type,
-            DeliveryDate = deliveryDate,
-            DeliveryTime = deliveryTime
-        };
+            Console.Write("Введите вес груза: ");
+            double weight = double.Parse(Console.ReadLine());
 
-        cargos.Add(cargo);
+            Console.Write("Введите тип груза: ");
+            string type = Console.ReadLine();
+
+            Console.Write("Введите дату поставки (например, 2024-05-27): ");
+            DateTime deliveryDate = DateTime.Parse(Console.ReadLine());
+
+            Console.Write("Введите время поставки (например, 14:30): ");
+            TimeSpan deliveryTime = TimeSpan.Parse(Console.ReadLine());
+
+            var cargo = new Cargo
+            {
+                Weight = weight,
+                Type = type,
+                DeliveryDate = deliveryDate,
+                DeliveryTime = deliveryTime
+            };
+
+            cargos.Add(cargo);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Ошибка ввода: {ex.Message}");
+        }
     }
 
     static void DisplayAllCargos()
@@ -114,7 +127,14 @@ class Program
             string line;
             while ((line = reader.ReadLine()) != null)
             {
-                cargos.Add(Cargo.FromString(line));
+                try
+                {
+                    cargos.Add(Cargo.FromString(line));
+                }
+                catch (FormatException ex)
+                {
+                    Console.WriteLine($"Ошибка при загрузке данных: {ex.Message}");
+                }
             }
         }
     }
