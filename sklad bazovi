@@ -1,0 +1,141 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+
+public class Cargo
+{
+    public double Weight { get; set; }
+    public string Type { get; set; }
+    public DateTime DeliveryDate { get; set; }
+    public TimeSpan DeliveryTime { get; set; }
+
+    public override string ToString()
+    {
+        return $"{Weight},{Type},{DeliveryDate.ToShortDateString()},{DeliveryTime}";
+    }
+
+    public static Cargo FromString(string line)
+    {
+        var parts = line.Split(',');
+
+        if (parts.Length != 4)
+        {
+            throw new FormatException("Неправильный формат строки.");
+        }
+
+        return new Cargo
+        {
+            Weight = double.Parse(parts[0]),
+            Type = parts[1],
+            DeliveryDate = DateTime.Parse(parts[2]),
+            DeliveryTime = TimeSpan.Parse(parts[3])
+        };
+    }
+}
+
+class Program
+{
+    static string filePath = "Склад.txt";
+    static List<Cargo> cargos = new List<Cargo>();
+
+    static void Main()
+    {
+        LoadData();
+        while (true)
+        {
+            Console.WriteLine("Д. Добавить новый груз");
+            Console.WriteLine("П. Показать все грузы");
+            Console.WriteLine("В. Выйти");
+            var choice = Console.ReadLine();
+
+            if (choice == "д")
+            {
+                AddNewCargo();
+            }
+            else if (choice == "п")
+            {
+                DisplayAllCargos();
+            }
+            else if (choice == "в")
+            {
+                SaveData();
+                break;
+            }
+        }
+    }
+
+    static void AddNewCargo()
+    {
+        try
+        {
+            Console.Write("Введите вес груза: ");
+            double weight = double.Parse(Console.ReadLine());
+
+            Console.Write("Введите тип груза: ");
+            string type = Console.ReadLine();
+
+            Console.Write("Введите дату поставки (например, 18.01.2006): ");
+            DateTime deliveryDate = DateTime.Parse(Console.ReadLine());
+
+            Console.Write("Введите время поставки (например, 14:30): ");
+            TimeSpan deliveryTime = TimeSpan.Parse(Console.ReadLine());
+
+            var cargo = new Cargo
+            {
+                Weight = weight,
+                Type = type,
+                DeliveryDate = deliveryDate,
+                DeliveryTime = deliveryTime
+            };
+
+            cargos.Add(cargo);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Ошибка ввода: {ex.Message}");
+        }
+    }
+
+    static void DisplayAllCargos()
+    {
+        foreach (var cargo in cargos)
+        {
+            Console.WriteLine($"Вес: {cargo.Weight}кг, Тип: {cargo.Type}, Дата поставки: {cargo.DeliveryDate.ToShortDateString()}, Время поставки: {cargo.DeliveryTime}");
+        }
+    }
+
+    static void SaveData()
+    {
+        using (var writer = new StreamWriter(filePath))
+        {
+            foreach (var cargo in cargos)
+            {
+                writer.WriteLine(cargo.ToString());
+            }
+        }
+    }
+
+    static void LoadData()
+    {
+        if (!File.Exists(filePath))
+        {
+            return;
+        }
+
+        using (var reader = new StreamReader(filePath))
+        {
+            string line;
+            while ((line = reader.ReadLine()) != null)
+            {
+                try
+                {
+                    cargos.Add(Cargo.FromString(line));
+                }
+                catch (FormatException ex)
+                {
+                    Console.WriteLine($"Ошибка при загрузке данных: {ex.Message}");
+                }
+            }
+        }
+    }
+}
