@@ -1,0 +1,147 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+
+public class Cargo
+{
+    public double Weight { get; set; } // Вес груза в килограммах
+    public string Type { get; set; } // Тип груза (например, "еда", "одежда", "электроника" и т. д.)
+    public DateTime DeliveryDate { get; set; } // Дата поставки груза
+    public TimeSpan DeliveryTime { get; set; } // Время поставки груза
+
+    // Представление объекта груза в виде строки
+    public override string ToString()
+    {
+        return $"{Weight},{Type},{DeliveryDate.ToShortDateString()},{DeliveryTime}";
+    }
+
+    // Создание объекта груза из строки
+    public static Cargo FromString(string line)
+    {
+        var parts = line.Split(',');
+
+        if (parts.Length != 4)
+        {
+            throw new FormatException("Неправильный формат строки.");
+        }
+
+        return new Cargo
+        {
+            Weight = double.Parse(parts[0]),
+            Type = parts[1],
+            DeliveryDate = DateTime.Parse(parts[2]),
+            DeliveryTime = TimeSpan.Parse(parts[3])
+        };
+    }
+}
+
+class Program
+{
+    static string filePath = "Склад.txt"; // Путь к файлу данных о грузах
+    static List<Cargo> cargos = new List<Cargo>(); // Список грузов в складе
+
+    static void Main()
+    {
+        LoadData(); // Загрузка данных о грузах из файла при запуске программы
+        while (true)
+        {
+            Console.WriteLine("Д. Добавить новый груз"); // Предложение добавить новый груз
+            Console.WriteLine("П. Показать все грузы"); // Предложение показать все грузы на складе
+            Console.WriteLine("В. Выйти"); // Предложение выйти из программы
+            var choice = Console.ReadLine(); // Считывание выбора пользователя
+
+            if (choice == "д")
+            {
+                AddNewCargo(); // Добавление нового груза
+            }
+            else if (choice == "п")
+            {
+                DisplayAllCargos(); // Вывод всех грузов на складе
+            }
+            else if (choice == "в")
+            {
+                SaveData(); // Сохранение данных о грузах в файл и завершение программы
+                break;
+            }
+        }
+    }
+
+    // Метод для добавления нового груза
+    static void AddNewCargo()
+    {
+        try
+        {
+            Console.Write("Введите вес груза: "); // Предложение ввести вес груза
+            double weight = double.Parse(Console.ReadLine());
+
+            Console.Write("Введите тип груза: "); // Предложение ввести тип груза
+            string type = Console.ReadLine();
+
+            Console.Write("Введите дату поставки (например, 18.01.2006): "); // Предложение ввести дату поставки
+            DateTime deliveryDate = DateTime.Parse(Console.ReadLine());
+
+            Console.Write("Введите время поставки (например, 14:30): "); // Предложение ввести время поставки
+            TimeSpan deliveryTime = TimeSpan.Parse(Console.ReadLine());
+
+            var cargo = new Cargo
+            {
+                Weight = weight,
+                Type = type,
+                DeliveryDate = deliveryDate,
+                DeliveryTime = deliveryTime
+            };
+
+            cargos.Add(cargo); // Добавление груза в список грузов на складе
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Ошибка ввода: {ex.Message}"); // Вывод сообщения об ошибке ввода
+        }
+    }
+
+    // Метод для отображения всех грузов на складе
+    static void DisplayAllCargos()
+    {
+        foreach (var cargo in cargos)
+        {
+            Console.WriteLine($"Вес: {cargo.Weight}кг, Тип: {cargo.Type}, Дата поставки: {cargo.DeliveryDate.ToShortDateString()}, Время поставки: {cargo.DeliveryTime}");
+        }
+    }
+
+    // Метод для сохранения данных о грузах в файл
+    static void SaveData()
+    {
+        using (var writer = new StreamWriter(filePath))
+        {
+            foreach (var cargo in cargos)
+            {
+                writer.WriteLine(cargo.ToString()); // Запись информации о каждом грузе в файл
+            }
+        }
+    }
+
+    // Метод для загрузки данных о грузах из файла
+    static void LoadData()
+    {
+        if (!File.Exists(filePath))
+        {
+            return; // Если файл данных не существует, выход из метода
+        }
+
+        using (var reader = new StreamReader(filePath))
+        {
+            string line;
+            while ((line = reader.ReadLine()) != null)
+            {
+                try
+                {
+                    cargos.Add(Cargo.FromString(line)); // Добавление груза, созданного из строки файла, в список грузов на складе
+                }
+                catch (FormatException ex)
+                {
+                    Console.WriteLine($"Ошибка при загрузке данных: {ex.Message}"); // Вывод сообщения об ошибке при загрузке данных
+                }
+            }
+        }
+    }
+}
