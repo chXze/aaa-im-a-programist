@@ -1,0 +1,105 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+// Класс Student - инкапсуляция данных студента
+public class Student
+{
+    // Обязательные параметры: Имя и Фамилия
+    public string FirstName { get; private set; }
+    public string LastName { get; private set; }
+
+    // Дополнительные параметры
+    public int Age { get; set; }
+    public string Email { get; set; }
+    public string Address { get; set; }
+
+    // Конструктор с обязательными и необязательными параметрами
+    public Student(string firstName, string lastName, int age = 0, string email = "", string address = "")
+    {
+        FirstName = firstName;
+        LastName = lastName;
+        Age = age;
+        Email = email;
+        Address = address;
+    }
+
+    // Метод для вывода информации о студенте
+    public override string ToString()
+    {
+        return $"Имя: {FirstName}, Фамилия: {LastName}, Возраст: {Age}, Email: {Email}, Адрес: {Address}";
+    }
+}
+
+// Класс управления базой данных студентов - инкапсуляция операций
+public class StudentManager
+{
+    private List<Student> students = new List<Student>();
+
+    // Метод для добавления студента
+    public void AddStudent(Student student)
+    {
+        students.Add(student);
+        Console.WriteLine("Студент добавлен.");
+    }
+
+    // Метод для удаления студента по фамилии и имени
+    public void RemoveStudent(string firstName, string lastName)
+    {
+        var student = students.FirstOrDefault(s => s.FirstName == firstName && s.LastName == lastName);
+        if (student != null)
+        {
+            students.Remove(student);
+            Console.WriteLine("Студент удалён.");
+        }
+        else
+        {
+            Console.WriteLine("Студент не найден.");
+        }
+    }
+
+    // Метод для вывода информации о всех студентах
+    public void DisplayStudents()
+    {
+        if (students.Count == 0)
+        {
+            Console.WriteLine("Список студентов пуст.");
+        }
+        else
+        {
+            Console.WriteLine("Список студентов:");
+            foreach (var student in students)
+            {
+                Console.WriteLine(student.ToString());
+            }
+        }
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        // Создаём объект управляющего
+        StudentManager manager = new StudentManager();
+
+        // Создаём студентов
+        Student student1 = new Student("Иван", "Иванов", 20, "ivan@mail.com", "Москва");
+        Student student2 = new Student("Анна", "Смирнова", 19);
+        Student student3 = new Student("Пётр", "Петров", 22, "petr@mail.com");
+
+        // Добавляем студентов в базу данных
+        manager.AddStudent(student1);
+        manager.AddStudent(student2);
+        manager.AddStudent(student3);
+
+        // Выводим список студентов
+        manager.DisplayStudents();
+
+        // Удаляем студента
+        manager.RemoveStudent("Анна", "Смирнова");
+
+        // Выводим список студентов после удаления
+        manager.DisplayStudents();
+    }
+}
