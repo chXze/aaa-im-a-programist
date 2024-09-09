@@ -1,0 +1,49 @@
+using System;
+using System.Collections.Generic; // Для использования List
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        // Создаем динамический список
+        List<int> numbers = new List<int>();
+
+        // Генерируем случайные числа и добавляем их в список
+        Random random = new Random();
+        for (int i = 0; i < 20; i++) // Заполняем 20 элементами
+        {
+            numbers.Add(random.Next(0, 101)); // Добавляем случайные числа от 0 до 100
+        }
+
+        // Выводим несортированный массив
+        Console.WriteLine("Несортированный массив:");
+        foreach (int number in numbers)
+        {
+            Console.Write(number + " ");
+        }
+        Console.WriteLine();
+
+        // Сортировка списка методом пузырька
+        for (int i = 0; i < numbers.Count - 1; i++)
+        {
+            for (int j = 0; j < numbers.Count - i - 1; j++)
+            {
+                if (numbers[j] > numbers[j + 1])
+                {
+                    // Меняем местами элементы
+                    int temp = numbers[j];
+                    numbers[j] = numbers[j + 1];
+                    numbers[j + 1] = temp;
+                }
+            }
+        }
+
+        // Выводим отсортированный массив
+        Console.WriteLine("Отсортированный массив:");
+        foreach (int number in numbers)
+        {
+            Console.Write(number + " ");
+        }
+        Console.WriteLine();
+    }
+}
