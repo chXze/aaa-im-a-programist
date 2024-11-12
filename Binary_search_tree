@@ -1,0 +1,108 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Binary_search_tree
+{
+    internal class UserServer
+    {
+        private const string CommandAddNote = "1";
+        private const string CommandRemoveNote = "2";
+        private const string CommadPrintNote = "3";
+        private const string CommandFindNote = "4";
+        private const string CommandExit = "5";
+
+        private Tree _tree;
+        private int number;
+
+        public UserServer() 
+        {
+            _tree = new Tree();
+        }
+        public void Start()
+        {
+            bool isStart = true;
+            string userCommand;
+
+            while (isStart)
+            {
+                Console.Clear();
+                Console.WriteLine("Добро пожаловать в бинарное дерево!");
+                Console.WriteLine($"Добавление нвой записи введите {CommandAddNote}");
+                Console.WriteLine($"Для удаление записи введите {CommandRemoveNote}");
+                Console.WriteLine($"Ддя вывода записи введите {CommadPrintNote}");
+                Console.WriteLine($"Для поиска записи введите {CommandFindNote}");
+                Console.WriteLine($"Для выхода {CommandExit}");
+                Console.Write("Ввод:");
+                userCommand = Console.ReadLine();
+
+                switch ( userCommand )
+                {
+                    case CommandAddNote:
+                        Add();
+                        break;
+                    case CommandRemoveNote:
+                        Remove();
+                        break;
+                    case CommadPrintNote:
+                        PrintNotis();
+                        break;
+                    case CommandFindNote:
+                        break;
+                    case CommandExit:
+                        isStart = false;
+                        break;
+                    default:
+                        Console.WriteLine("Вы ввели неверную (коректную) команду");
+                        break;
+
+                }
+            }
+        }
+        private void Add()
+        {
+            bool isDontInputNumber = true;
+            int number = 0;
+            string text;
+
+            while( isDontInputNumber )
+            {
+                Console.WriteLine("Введите число:");
+                text = Console.ReadLine();
+
+                if(int.TryParse(text, out number))
+                    isDontInputNumber = false;
+                else
+                    Console.WriteLine("Вы ввели не число!");
+            }
+            _tree.AcceptNotee(number);
+        }
+        private void Remove()
+        {
+            int nimber = 0;
+            string text;
+
+            Console.WriteLine("Введите удаляемый элемент!");
+            text = Console.ReadLine();
+
+            if (int.TryParse(text, out number))
+            
+                _tree.RemoveNote(number);
+            else
+                Console.WriteLine("Вы ввели не номер!");
+        }
+        private void PrintNotis()
+        {
+            List<string> textNotes;
+
+            textNotes = _tree.GetListNotis();
+
+            Console.WriteLine();
+
+            foreach( string note in textNotes)
+                Console.WriteLine(note);
+        }
+    }
+}
