@@ -130,26 +130,73 @@ namespace BinaryTree
         {
             var tree = new BinaryTree();
 
-            // Добавление значений
-            tree.Add(50);
-            tree.Add(30);
-            tree.Add(70);
-            tree.Add(20);
-            tree.Add(40);
-            tree.Add(60);
-            tree.Add(80);
+            while (true)
+            {
+                Console.WriteLine("\nВыберите действие:");
+                Console.WriteLine("1 - Добавить элемент");
+                Console.WriteLine("2 - Показать дерево");
+                Console.WriteLine("3 - Найти элемент");
+                Console.WriteLine("4 - Удалить элемент");
+                Console.WriteLine("0 - Выход");
 
-            Console.WriteLine("Tree values in order:");
-            tree.PrintValues();
+                Console.Write("\nВведите номер действия: ");
+                string input = Console.ReadLine();
 
-            // Поиск значений
-            Console.WriteLine("Find 40: " + tree.Find(40));
-            Console.WriteLine("Find 90: " + tree.Find(90));
+                switch (input)
+                {
+                    case "1":
+                        Console.Write("Введите число для добавления: ");
+                        if (int.TryParse(Console.ReadLine(), out int addNumber))
+                        {
+                            tree.Add(addNumber);
+                            Console.WriteLine($"Число {addNumber} добавлено в дерево.");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Ошибка: введено некорректное число.");
+                        }
+                        break;
 
-            // Удаление узлов
-            Console.WriteLine("Removing 70...");
-            tree.Remove(70);
-            tree.PrintValues();
+                    case "2":
+                        Console.WriteLine("Элементы дерева:");
+                        tree.PrintValues();
+                        break;
+
+                    case "3":
+                        Console.Write("Введите число для поиска: ");
+                        if (int.TryParse(Console.ReadLine(), out int findNumber))
+                        {
+                            bool found = tree.Find(findNumber);
+                            Console.WriteLine(found ? $"Число {findNumber} найдено." : $"Число {findNumber} не найдено.");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Ошибка: введено некорректное число.");
+                        }
+                        break;
+
+                    case "4":
+                        Console.Write("Введите число для удаления: ");
+                        if (int.TryParse(Console.ReadLine(), out int removeNumber))
+                        {
+                            tree.Remove(removeNumber);
+                            Console.WriteLine($"Число {removeNumber} удалено из дерева.");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Ошибка: введено некорректное число.");
+                        }
+                        break;
+
+                    case "0":
+                        Console.WriteLine("Выход из программы.");
+                        return;
+
+                    default:
+                        Console.WriteLine("Ошибка: некорректная команда. Попробуйте снова.");
+                        break;
+                }
+            }
         }
     }
 }
