@@ -1,0 +1,246 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace BinaryTree
+{
+    public class Node
+    {
+        private Node _leftBranch;
+        private Node _rightBranch;
+
+        public Node(int id, int number)
+        {
+            _leftBranch = null;
+            _rightBranch = null;
+
+            Id = id;
+            Number = number;
+        }
+
+       public int Id { get; private set; }
+        public int Number { get; private set; }
+
+        public void Add(int number) 
+        {
+            if (number < Number)
+            {
+                if (_leftBranch == null)
+                    _leftBranch = new Node(Id + 1, number);
+                else
+                    _leftBranch.Add(number);
+            }
+            else 
+            {
+                if (_leftBranch == null)
+                    _leftBranch = new Node(Id + 1, Number);
+                else 
+                    _leftBranch.Add(number);
+            }
+        }
+
+        public void PrintValues()
+        {
+            _leftBranch?.PrintValues();
+            Console.WriteLine($"{Id}) - {Number}");
+            _rightBranch?.PrintValues();
+        }
+
+        public bool Find(int number)
+        {
+            if (number == Number)
+                return true;
+
+            if (number < Number)
+                return _leftBranch?.Find(number) ?? false;
+
+            return _rightBranch?.Find(number) ?? false;
+        }
+
+        public Node Remove(int number, Node parent = null)
+        {
+            if (number < Number)
+            {
+                if (_leftBranch != null)
+                    _leftBranch = _leftBranch.Remove(number, this);
+            }
+            else if (number > Number)
+            {
+                if (_rightBranch != null)
+                    _rightBranch = _rightBranch.Remove(number, this);
+            }
+            else
+            {
+                if (_leftBranch != null && _rightBranch != null)
+                {
+                    Number = _rightBranch.GetMinValue();
+                    _rightBranch = _rightBranch.Remove(Number, this);
+                }
+                else
+                {
+                    return _leftBranch ?? _rightBranch;
+                }
+            }
+
+            return this;
+        }
+
+        private int GetMinValue()
+        {
+            return _leftBranch?.GetMinValue() ?? Number;
+        }
+    }
+
+    public class BinaryTree
+    {
+        private Node _root;
+
+        public void Add(int number)
+        {
+            if (_root == null)
+                _root = new Node(1, number);
+            else
+                _root.Add(number);
+        }
+
+        public void PrintValues()
+        {
+            if (_root == null)
+            {
+                Console.WriteLine("Tree is empty.");
+                return;
+            }
+
+            _root.PrintValues();
+        }
+
+        public bool Find(int number)
+        {
+            return _root?.Find(number) ?? false;
+        }
+
+        public void Remove(int number)
+        {
+            if (_root != null)
+                _root = _root.Remove(number);
+        }
+    }
+
+    class ConsolControl
+    {    
+        enum Command
+        {
+            Add = 1,
+            Show,
+            Find,
+            Remove,
+            Exit = 0
+        }
+
+        static void Main(string[] args)
+        {
+            var tree = new BinaryTree();
+
+            while (true)
+            {
+                ShowMenu();
+                string input = Console.ReadLine();
+
+                if (Enum.TryParse(input, out Command command))
+                {
+                    switch (command)
+                    {
+                        case Command.Add:
+                            AddElement(tree);
+                            break;
+
+                        case Command.Show:
+                            ShowTree(tree);
+                            break;
+
+                        case Command.Find:
+                            FindElement(tree);
+                            break;
+
+                        case Command.Remove:
+                            RemoveElement(tree);
+                            break;
+
+                        case Command.Exit:
+                            Console.WriteLine("Выход из программы.");
+                            return;
+
+                        default:
+                            Console.WriteLine("Ошибка: некорректная команда. Попробуйте снова.");
+                            break;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Ошибка: введена некорректная команда.");
+                }
+            }
+        }
+        static void ShowMenu()
+        {
+            Console.WriteLine("\nВыберите действие:");
+            Console.WriteLine("1 - Добавить элемент");
+            Console.WriteLine("2 - Показать дерево");
+            Console.WriteLine("3 - Найти элемент");
+            Console.WriteLine("4 - Удалить элемент");
+            Console.WriteLine("0 - Выход");
+            Console.Write("\nВведите номер действия: ");
+        }
+
+        static void AddElement(BinaryTree tree)
+        {
+            Console.Write("Введите число для добавления: ");
+            if (int.TryParse(Console.ReadLine(), out int addNumber))
+            {
+                tree.Add(addNumber);
+                Console.WriteLine($"Число {addNumber} добавлено в дерево.");
+            }
+            else
+            {
+                Console.WriteLine("Ошибка: введено некорректное число.");
+            }
+        }
+
+        static void ShowTree(BinaryTree tree)
+        {
+            Console.WriteLine("Элементы дерева:");
+            tree.PrintValues();
+        }
+
+        static void FindElement(BinaryTree tree)
+        {
+            Console.Write("Введите число для поиска: ");
+            if (int.TryParse(Console.ReadLine(), out int findNumber))
+            {
+                bool found = tree.Find(findNumber);
+                Console.WriteLine(found ? $"Число {findNumber} найдено." : $"Число {findNumber} не найдено.");
+            }
+            else
+            {
+                Console.WriteLine("Ошибка: введено некорректное число.");
+            }
+        }
+
+        static void RemoveElement(BinaryTree tree)
+        {
+            Console.Write("Введите число для удаления: ");
+            if (int.TryParse(Console.ReadLine(), out int removeNumber))
+            {
+                tree.Remove(removeNumber);
+                Console.WriteLine($"Число {removeNumber} удалено из дерева.");
+            }
+            else
+            {
+                Console.WriteLine("Ошибка: введено некорректное число.");
+            }
+        }
+    }
+
+}
