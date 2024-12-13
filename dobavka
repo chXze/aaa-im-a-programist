@@ -1,0 +1,123 @@
+using System;
+
+public class Program
+{
+    // Перечисление команд
+    enum Command
+    {
+        Add = 1,
+        Show,
+        Find,
+        Remove,
+        Exit = 0
+    }
+
+    static void Main(string[] args)
+    {
+        var tree = new BinaryTree();
+
+        while (true)
+        {
+            ShowMenu();
+            string input = Console.ReadLine();
+
+            if (Enum.TryParse(input, out Command command))
+            {
+                switch (command)
+                {
+                    case Command.Add:
+                        AddElement(tree);
+                        break;
+
+                    case Command.Show:
+                        ShowTree(tree);
+                        break;
+
+                    case Command.Find:
+                        FindElement(tree);
+                        break;
+
+                    case Command.Remove:
+                        RemoveElement(tree);
+                        break;
+
+                    case Command.Exit:
+                        Console.WriteLine("Выход из программы.");
+                        return;
+
+                    default:
+                        Console.WriteLine("Ошибка: некорректная команда. Попробуйте снова.");
+                        break;
+                }
+            }
+            else
+            {
+                Console.WriteLine("Ошибка: введена некорректная команда.");
+            }
+        }
+    }
+
+    // Метод для отображения меню
+    static void ShowMenu()
+    {
+        Console.WriteLine("\nВыберите действие:");
+        Console.WriteLine("1 - Добавить элемент");
+        Console.WriteLine("2 - Показать дерево");
+        Console.WriteLine("3 - Найти элемент");
+        Console.WriteLine("4 - Удалить элемент");
+        Console.WriteLine("0 - Выход");
+        Console.Write("\nВведите номер действия: ");
+    }
+
+    // Метод для добавления элемента
+    static void AddElement(BinaryTree tree)
+    {
+        Console.Write("Введите число для добавления: ");
+        if (int.TryParse(Console.ReadLine(), out int addNumber))
+        {
+            tree.Add(addNumber);
+            Console.WriteLine($"Число {addNumber} добавлено в дерево.");
+        }
+        else
+        {
+            Console.WriteLine("Ошибка: введено некорректное число.");
+        }
+    }
+
+    // Метод для показа дерева
+    static void ShowTree(BinaryTree tree)
+    {
+        Console.WriteLine("Элементы дерева:");
+        tree.PrintValues();
+    }
+
+    // Метод для поиска элемента
+    static void FindElement(BinaryTree tree)
+    {
+        Console.Write("Введите число для поиска: ");
+        if (int.TryParse(Console.ReadLine(), out int findNumber))
+        {
+            bool found = tree.Find(findNumber);
+            Console.WriteLine(found ? $"Число {findNumber} найдено." : $"Число {findNumber} не найдено.");
+        }
+        else
+        {
+            Console.WriteLine("Ошибка: введено некорректное число.");
+        }
+    }
+
+    // Метод для удаления элемента
+    static void RemoveElement(BinaryTree tree)
+    {
+        Console.Write("Введите число для удаления: ");
+        if (int.TryParse(Console.ReadLine(), out int removeNumber))
+        {
+            tree.Remove(removeNumber);
+            Console.WriteLine($"Число {removeNumber} удалено из дерева.");
+        }
+        else
+        {
+            Console.WriteLine("Ошибка: введено некорректное число.");
+        }
+    }
+}
